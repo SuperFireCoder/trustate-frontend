@@ -11,6 +11,7 @@ export const GET_CUSTOMERS = gql`
       SecondName
       LastName
       FirstName
+      Email
     }
   }
 `;

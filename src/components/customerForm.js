@@ -13,21 +13,30 @@ const ADD_CUSTOMER = gql`
     $FirstName: String
     $SecondName: String
     $LastName: String
+    $Email: String
   ) {
     CreateCustomer(
       FullName: $FullName
       FirstName: $FirstName
       SecondName: $SecondName
       LastName: $LastName
-    )
+      Email: $Email
+    ) {
+      ID
+      FullName
+      FirstName
+      SecondName
+      LastName
+      Email
+    }
   }
 `;
 
 export function CustomersForm() {
-  const [addCustomer, { data }] = useMutation(ADD_CUSTOMER, {
+  const [addCustomer, { data, loading, error }] = useMutation(ADD_CUSTOMER, {
     refetchQueries: [{ query: GET_CUSTOMERS }]
   });
-  console.log(data);
+  console.log(data, loading, error);
 
   return (
     <div id="customerForm">
@@ -60,6 +69,7 @@ export function CustomersForm() {
               FullName: `${fields.FirstName}  ${fields.SecondName}  ${fields.LastName}`
             }
           });
+          alert('submittted!');
           resetForm();
         }}
         render={({ errors, status, touched }) => (

@@ -47,13 +47,22 @@ const ADD_CUSTOMER = gql`
     $FirstName: String
     $SecondName: String
     $LastName: String
+    $Email: String
   ) {
     CreateCustomer(
       FullName: $FullName
       FirstName: $FirstName
       SecondName: $SecondName
       LastName: $LastName
-    )
+      Email: $Email
+    ) {
+      ID
+      FullName
+      FirstName
+      SecondName
+      LastName
+      Email
+    }
   }
 `;
 ```
@@ -165,6 +174,7 @@ export const GET_CUSTOMERS = gql`
       SecondName
       LastName
       FirstName
+      Email
     }
   }
 `;
