@@ -14,6 +14,9 @@ const ADD_CUSTOMER = gql`
     $SecondName: String
     $LastName: String
     $Email: String
+    $Date: String
+    $Location: String
+    $Description: String
   ) {
     CreateCustomer(
       FullName: $FullName
@@ -21,6 +24,9 @@ const ADD_CUSTOMER = gql`
       SecondName: $SecondName
       LastName: $LastName
       Email: $Email
+      Date: $Date
+      Location: $Location
+      Description: $Description
     ) {
       ID
       FullName
@@ -28,11 +34,14 @@ const ADD_CUSTOMER = gql`
       SecondName
       LastName
       Email
+      Date
+      Location
+      Description
     }
   }
 `;
 
-export function CustomersForm() {
+export function CustomersForm({ onClose, refetch }) {
   const [addCustomer, { data, loading, error }] = useMutation(ADD_CUSTOMER, {
     refetchQueries: [{ query: GET_CUSTOMERS }]
   });
@@ -40,13 +49,15 @@ export function CustomersForm() {
 
   return (
     <div id="customerForm">
-      <h3>ADD HUMAN</h3>
       <Formik
         initialValues={{
           FirstName: "",
           SecondName: "",
           LastName: "",
-          Email: ""
+          Email: "",
+          Date: "",
+          Location: "",
+          Description: ""
         }}
         validationSchema={Yup.object().shape({
           FirstName: Yup.string()
@@ -60,17 +71,25 @@ export function CustomersForm() {
             .min(2, 'Last Name must be at least 2 characters'),
           Email: Yup.string()
             .email("Email is invalid")
-            .required("Email is required")
+            .required("Email is required"),
+          Date: Yup.string().required("Date is required"),
+          Location: Yup.string().required("Location is required"),
+          Description: Yup.string().required("Description is required")
         })}
-        onSubmit={(fields, { resetForm }) => {
-          addCustomer({
-            variables: {
-              ...fields,
-              FullName: `${fields.FirstName}  ${fields.SecondName}  ${fields.LastName}`
-            }
-          });
-          alert('submittted!');
-          resetForm();
+        onSubmit={async (fields, { resetForm }) => {
+          try {
+            await addCustomer({
+              variables: {
+                ...fields,
+                FullName: `${fields.FirstName} ${fields.SecondName} ${fields.LastName}`,
+              },
+            });
+            resetForm();
+            onClose();
+          } catch (err) {
+            console.error("Error creating customer:", err);
+            alert('Error adding customer. Please try again.');
+          }
         }}
         render={({ errors, status, touched }) => (
           <Form>
@@ -110,12 +129,51 @@ export function CustomersForm() {
               variant="outlined"
               fullWidth
             />
-            <Button type="submit" variant="outlined" color="primary">
-              Register
+            <Field
+              name="Date"
+              type="date"
+              component={TextField}
+              margin="normal"
+              variant="outlined"
+              fullWidth
+              error={touched.Date && Boolean(errors.Date)}
+              helperText={touched.Date && errors.Date}
+            />
+            <Field
+              label="Location"
+              name="Location"
+              type="text"
+              component={TextField}
+              margin="normal"
+              variant="outlined"
+              fullWidth
+              error={touched.Location && Boolean(errors.Location)}
+              helperText={touched.Location && errors.Location}
+            />
+            <Field
+              label="Description"
+              name="Description"
+              type="text"
+              component={TextField}
+              margin="normal"
+              variant="outlined"
+              fullWidth
+              error={touched.Description && Boolean(errors.Description)}
+              helperText={touched.Description && errors.Description}
+            />
+            <Button
+              type="submit"
+              variant="outlined"
+              color="primary"
+              disabled={loading}
+            >
+              {loading ? 'Submitting...' : 'Register'}
             </Button>{" "}
             <Button type="reset" variant="outlined" color="secondary">
               Reset
             </Button>
+
+            {error && <p style={{ color: 'red' }}>Error: {error.message}</p>}
           </Form>
         )}
       ></Formik>

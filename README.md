@@ -1,5 +1,4 @@
 # React-Form + Formik + Yup + MaterialUI +GraphQL
-![Screenshot](ScreenShot.png)
 
 
 This is a quick example of how to use form validations in React, using Formik and Yup as validations schema.
@@ -154,7 +153,7 @@ export function CustomersForm() {
 
 ```
 
-## List of Humans - customers.js
+## List of Customers - customers.js
 
 ### Import our Packages
 ```
@@ -191,7 +190,7 @@ export function Customers() {
   if (error) return <p style={{ color: "red" }}> Error! ${error.message}`</p>;
   return (
     <div id="viewCustomers">
-      <h5>LIST OF HUMANS</h5>
+      <h5>LIST OF CUSTOMERS</h5>
       {data.Customers.map((p, i) => (
         <Card
           key={i}
