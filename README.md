@@ -75,7 +75,7 @@ export function CustomersForm() {
 
   return (
     <div id="customerForm">
-      <h3>ADD HUMAN</h3>
+      <h3>ADD CUSTOMER</h3>
       <Formik
         initialValues={{
           FirstName: "",
